@@ -27,14 +27,14 @@
 ### Usage
 
 ```bash
-npm install react-player --save
+npm install @wizedemy/react-player --save
 # or
-yarn add react-player
+yarn add @wizedemy/react-player
 ```
 
 ```js
 import React, { Component } from 'react'
-import ReactPlayer from 'react-player'
+import ReactPlayer from '@wizedemy/react-player'
 
 class App extends Component {
   render () {
