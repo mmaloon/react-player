@@ -15,6 +15,7 @@ export const propTypes = {
   style: object,
   progressInterval: number,
   playsinline: bool,
+  pip: bool,
   wrapper: oneOfType([ string, func ]),
   config: shape({
     soundcloud: shape({
@@ -42,7 +43,9 @@ export const propTypes = {
       forceAudio: bool,
       forceHLS: bool,
       forceDASH: bool,
-      hlsOptions: object
+      hlsOptions: object,
+      hlsVersion: string,
+      dashVersion: string
     }),
     wistia: shape({
       options: object
@@ -63,7 +66,9 @@ export const propTypes = {
   onError: func,
   onDuration: func,
   onSeek: func,
-  onProgress: func
+  onProgress: func,
+  onEnablePIP: func,
+  onDisablePIP: func
 }
 
 export const defaultProps = {
@@ -78,6 +83,7 @@ export const defaultProps = {
   style: {},
   progressInterval: 1000,
   playsinline: false,
+  pip: false,
   wrapper: 'div',
   config: {
     soundcloud: {
@@ -127,7 +133,9 @@ export const defaultProps = {
       forceAudio: false,
       forceHLS: false,
       forceDASH: false,
-      hlsOptions: {}
+      hlsOptions: {},
+      hlsVersion: '0.10.1',
+      dashVersion: '2.9.2'
     },
     wistia: {
       options: {}
@@ -150,7 +158,9 @@ export const defaultProps = {
   onError: function () {},
   onDuration: function () {},
   onSeek: function () {},
-  onProgress: function () {}
+  onProgress: function () {},
+  onEnablePIP: function () {},
+  onDisablePIP: function () {}
 }
 
 export const DEPRECATED_CONFIG_PROPS = [

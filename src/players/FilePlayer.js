@@ -7,10 +7,10 @@ const IOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigato
 const AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx)($|\?)/i
 const VIDEO_EXTENSIONS = /\.(mp4|og[gv]|webm|mov|m4v)($|\?)/i
 const HLS_EXTENSIONS = /\.(m3u8)($|\?)/i
-const HLS_SDK_URL = 'https://cdn.jsdelivr.net/npm/hls.js@latest'
+const HLS_SDK_URL = 'https://cdnjs.cloudflare.com/ajax/libs/hls.js/VERSION/hls.min.js'
 const HLS_GLOBAL = 'Hls'
 const DASH_EXTENSIONS = /\.(mpd)($|\?)/i
-const DASH_SDK_URL = 'https://cdn.dashjs.org/latest/dash.all.min.js'
+const DASH_SDK_URL = 'https://cdnjs.cloudflare.com/ajax/libs/dashjs/VERSION/dash.all.min.js'
 const DASH_GLOBAL = 'dashjs'
 const MATCH_DROPBOX_URL = /www\.dropbox\.com\/.+/
 
@@ -37,9 +37,14 @@ function canPlay (url) {
   )
 }
 
+function canEnablePIP (url) {
+  return canPlay(url) && !!document.pictureInPictureEnabled && !AUDIO_EXTENSIONS.test(url)
+}
+
 export class FilePlayer extends Component {
   static displayName = 'FilePlayer'
   static canPlay = canPlay
+  static canEnablePIP = canEnablePIP
 
   componentDidMount () {
     this.addListeners()
@@ -62,26 +67,37 @@ export class FilePlayer extends Component {
     this._isUnmounted = true;
   }
   addListeners () {
-    const { onReady, onPlay, onPause, onEnded, onError, playsinline } = this.props
+    const { onReady, onPlay, onPause, onEnded, onError, playsinline, onEnablePIP } = this.props
     this.player.addEventListener('canplay', onReady)
     this.player.addEventListener('play', onPlay)
     this.player.addEventListener('pause', onPause)
     this.player.addEventListener('seeked', this.onSeek)
     this.player.addEventListener('ended', onEnded)
     this.player.addEventListener('error', onError)
+    this.player.addEventListener('enterpictureinpicture', onEnablePIP)
+    this.player.addEventListener('leavepictureinpicture', this.onDisablePIP)
     if (playsinline) {
       this.player.setAttribute('playsinline', '')
       this.player.setAttribute('webkit-playsinline', '')
     }
   }
   removeListeners () {
-    const { onReady, onPlay, onPause, onEnded, onError } = this.props
+    const { onReady, onPlay, onPause, onEnded, onError, onEnablePIP } = this.props
     this.player.removeEventListener('canplay', onReady)
     this.player.removeEventListener('play', onPlay)
     this.player.removeEventListener('pause', onPause)
     this.player.removeEventListener('seeked', this.onSeek)
     this.player.removeEventListener('ended', onEnded)
     this.player.removeEventListener('error', onError)
+    this.player.removeEventListener('enterpictureinpicture', onEnablePIP)
+    this.player.removeEventListener('leavepictureinpicture', this.onDisablePIP)
+  }
+  onDisablePIP = e => {
+    const { onDisablePIP, playing } = this.props
+    onDisablePIP(e)
+    if (playing) {
+      this.play()
+    }
   }
   onSeek = e => {
     this.props.onSeek(e.target.currentTime)
@@ -102,8 +118,9 @@ export class FilePlayer extends Component {
     return DASH_EXTENSIONS.test(url) || this.props.config.file.forceDASH
   }
   load (url) {
+    const { hlsVersion, dashVersion } = this.props.config.file
     if (this.shouldUseHLS(url)) {
-      getSDK(HLS_SDK_URL, HLS_GLOBAL).then(Hls => {
+      getSDK(HLS_SDK_URL.replace('VERSION', hlsVersion), HLS_GLOBAL).then(Hls => {
         if (this._isUnmounted) return
         this.hls = new Hls(this.props.config.file.hlsOptions)
         this.hls.on(Hls.Events.ERROR, (e, data) => {
@@ -114,7 +131,7 @@ export class FilePlayer extends Component {
       })
     }
     if (this.shouldUseDASH(url)) {
-      getSDK(DASH_SDK_URL, DASH_GLOBAL).then(dashjs => {
+      getSDK(DASH_SDK_URL.replace('VERSION', dashVersion), DASH_GLOBAL).then(dashjs => {
         if (this._isUnmounted) return
         this.dash = dashjs.MediaPlayer().create()
         this.dash.initialize(this.player, url, this.props.playing)
@@ -166,12 +183,28 @@ export class FilePlayer extends Component {
   unmute = () => {
     this.player.muted = false
   }
+  enablePIP () {
+    if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
+      this.player.requestPictureInPicture()
+    }
+  }
+  disablePIP () {
+    if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
+      document.exitPictureInPicture()
+    }
+  }
   setPlaybackRate (rate) {
     this.player.playbackRate = rate
   }
   getDuration () {
     if (!this.player) return null
-    return this.player.duration
+    const { duration, seekable } = this.player
+    // on iOS, live streams return Infinity for the duration
+    // so instead we use the end of the seekable timerange
+    if (duration === Infinity && seekable.length > 0) {
+      return seekable.end(seekable.length - 1)
+    }
+    return duration
   }
   getCurrentTime () {
     if (!this.player) return null
