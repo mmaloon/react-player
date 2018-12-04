@@ -74,6 +74,7 @@ Prop | Description | Default
 `style` | Add [inline styles](https://facebook.github.io/react/tips/inline-styles.html) to the root element | `{}`
 `progressInterval` | The time between `onProgress` callbacks, in milliseconds | `1000`
 `playsinline` | Applies the `playsinline` attribute where supported | `false`
+`pip` | Set to `true` or `false` to enable or disable [picture-in-picture mode](https://developers.google.com/web/updates/2018/10/watch-video-using-picture-in-picture) | `false`
 `wrapper` | Element or component to use as the container element | `div`
 `config` | Override options for the various players, see [config prop](#config-prop)
 
@@ -91,8 +92,10 @@ Prop | Description
 `onPause` | Called when media is paused
 `onBuffer` | Called when media starts buffering
 `onSeek` | Called when media seeks with `seconds` parameter
-`onEnded` | Called when media finishes playing
+`onEnded` | Called when media finishes playing<br />&nbsp; ◦ &nbsp;Does not fire when `loop` is set to `true`
 `onError` | Called when an error occurs whilst attempting to play media
+`onEnablePIP` | Called when picture-in-picture mode is enabled
+`onDisablePIP` | Called when picture-in-picture mode is disabled
 
 #### Config prop
 
@@ -134,7 +137,7 @@ Key | Options
 `mixcloud` | `options`: Override the [default player options](https://www.mixcloud.com/developers/widget/#methods)
 `dailymotion` | `params`: Override the [default player vars](https://developer.dailymotion.com/player#player-parameters)<br />`preload`: Used for [preloading](#preloading)
 `twitch` | `options`: Override the [default player options](https://dev.twitch.tv/docs/embed)
-`file` | `attributes`: Apply [element attributes](https://developer.mozilla.org/en/docs/Web/HTML/Element/video#Attributes)<br />`forceVideo`: Always render a `<video>` element<br />`forceAudio`: Always render an `<audio>` element<br />`forceHLS`: Use [hls.js](https://github.com/video-dev/hls.js) for HLS streams<br />`forceDASH`: Always use [dash.js](https://github.com/Dash-Industry-Forum/dash.js) for DASH streams<br />`hlsOptions`: Override the [default `hls.js` options](https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning)
+`file` | `attributes`: Apply [element attributes](https://developer.mozilla.org/en/docs/Web/HTML/Element/video#Attributes)<br />`forceVideo`: Always render a `<video>` element<br />`forceAudio`: Always render an `<audio>` element<br />`forceHLS`: Use [hls.js](https://github.com/video-dev/hls.js) for HLS streams<br />`forceDASH`: Always use [dash.js](https://github.com/Dash-Industry-Forum/dash.js) for DASH streams<br />`hlsOptions`: Override the [default `hls.js` options](https://github.com/video-dev/hls.js/blob/master/docs/API.md#fine-tuning)<br />`hlsVersion`: Override the [`hls.js`](https://github.com/video-dev/hls.js) version loaded from [`cdnjs`](https://cdnjs.com/libraries/hls.js), default: `0.10.1`<br />`dashVersion`: Override the [`dash.js`](https://github.com/Dash-Industry-Forum/dash.js) version loaded from [`cdnjs`](https://cdnjs.com/libraries/dashjs), default: `2.9.2`
 
 ##### Preloading
 
@@ -147,6 +150,7 @@ When `preload` is set to `true` for players that support it, a short, silent vid
 Method | Description
 ------ | -----------
 `ReactPlayer.canPlay(url)` | Determine if a URL can be played. This does *not* detect media that is unplayable due to privacy settings, streaming permissions, etc. In that case, the `onError` prop will be invoked after attemping to play. Any URL that does not match any patterns will fall back to a native HTML5 media player.
+`ReactPlayer.canEnablePiP(url)` | Determine if a URL can be played in [picture-in-picture mode](https://developers.google.com/web/updates/2018/10/watch-video-using-picture-in-picture)
 `ReactPlayer.addCustomPlayer(CustomPlayer)` | Add a custom player. See [Adding custom players](#adding-custom-players)
 `ReactPlayer.removeCustomPlayers()` | Remove any players that have been added using `addCustomPlayer()`
 
