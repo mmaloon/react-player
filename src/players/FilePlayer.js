@@ -128,6 +128,9 @@ export class FilePlayer extends Component {
         })
         this.hls.loadSource(url)
         this.hls.attachMedia(this.player)
+      }).catch(fetchError => {
+        if (this._isUnmounted) return
+        this.props.onError('SDK_LOAD_ERROR', fetchError)
       })
     }
     if (this.shouldUseDASH(url)) {
@@ -136,6 +139,9 @@ export class FilePlayer extends Component {
         this.dash = dashjs.MediaPlayer().create()
         this.dash.initialize(this.player, url, this.props.playing)
         this.dash.getDebug().setLogToBrowserConsole(false)
+      }).catch(fetchError => {
+        if (this._isUnmounted) return
+        this.props.onError('SDK_LOAD_ERROR', fetchError)
       })
     }
 
