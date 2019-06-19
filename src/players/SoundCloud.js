@@ -80,8 +80,7 @@ export class SoundCloud extends Component {
   render () {
     const style = {
       width: '100%',
-      height: '100%',
-      ...this.props.style
+      height: '100%'
     }
     return (
       <iframe
@@ -89,6 +88,7 @@ export class SoundCloud extends Component {
         src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(this.props.url)}`}
         style={style}
         frameBorder={0}
+        allow='autoplay'
       />
     )
   }
