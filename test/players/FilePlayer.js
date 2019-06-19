@@ -371,7 +371,7 @@ test('render tracks', t => {
       {false}
       {[
         <track key={0} kind='subtitles' src='subtitles.en.vtt' srcLang='en' default />,
-        <track key={1} kind='subtitles' src='subtitles.js.vtt' srcLang='js' />
+        <track key={1} kind='subtitles' src='subtitles.ja.vtt' srcLang='ja' />
       ]}
     </video>
   ))
