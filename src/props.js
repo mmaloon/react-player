@@ -16,13 +16,20 @@ export const propTypes = {
   progressInterval: number,
   playsinline: bool,
   pip: bool,
-  wrapper: oneOfType([ string, func ]),
+  light: oneOfType([ bool, string ]),
+  wrapper: oneOfType([
+    string,
+    func,
+    shape({ render: func.isRequired })
+  ]),
   config: shape({
     soundcloud: shape({
-      options: object
+      options: object,
+      preload: bool
     }),
     youtube: shape({
       playerVars: object,
+      embedOptions: object,
       preload: bool
     }),
     facebook: shape({
@@ -62,6 +69,7 @@ export const propTypes = {
   onPlay: func,
   onPause: func,
   onBuffer: func,
+  onBufferEnd: func,
   onEnded: func,
   onError: func,
   onDuration: func,
@@ -84,6 +92,7 @@ export const defaultProps = {
   progressInterval: 1000,
   playsinline: false,
   pip: false,
+  light: false,
   wrapper: 'div',
   config: {
     soundcloud: {
@@ -105,6 +114,7 @@ export const defaultProps = {
         iv_load_policy: 3,
         modestbranding: 1
       },
+      embedOptions: {},
       preload: false
     },
     facebook: {
@@ -154,6 +164,7 @@ export const defaultProps = {
   onPlay: function () {},
   onPause: function () {},
   onBuffer: function () {},
+  onBufferEnd: function () {},
   onEnded: function () {},
   onError: function () {},
   onDuration: function () {},

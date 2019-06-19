@@ -35,7 +35,7 @@ export default class Player extends Component {
   }
   componentWillReceiveProps (nextProps) {
     // Invoke player methods based on incoming props
-    const { url, playing, volume, muted, playbackRate, pip } = this.props
+    const { url, playing, volume, muted, playbackRate, pip, loop } = this.props
     if (!isEqual(url, nextProps.url)) {
       if (this.isLoading) {
         console.warn(`ReactPlayer: the attempt to load ${nextProps.url} is being deferred until the player has loaded`)
@@ -75,6 +75,9 @@ export default class Player extends Component {
     if (playbackRate !== nextProps.playbackRate && this.player.setPlaybackRate) {
       this.player.setPlaybackRate(nextProps.playbackRate)
     }
+    if (loop !== nextProps.loop && this.player.setLoop) {
+      this.player.setLoop(nextProps.loop)
+    }
   }
   getDuration () {
     if (!this.isReady) return null
@@ -107,23 +110,24 @@ export default class Player extends Component {
           progress.loaded = loadedSeconds / duration
         }
         // Only call onProgress if values have changed
-        if (progress.played !== this.prevPlayed || progress.loaded !== this.prevLoaded) {
+        if (progress.playedSeconds !== this.prevPlayed || progress.loadedSeconds !== this.prevLoaded) {
           this.props.onProgress(progress)
         }
-        this.prevPlayed = progress.played
-        this.prevLoaded = progress.loaded
+        this.prevPlayed = progress.playedSeconds
+        this.prevLoaded = progress.loadedSeconds
       }
     }
     this.progressTimeout = setTimeout(this.progress, this.props.progressFrequency || this.props.progressInterval)
   }
-  seekTo (amount) {
+  seekTo (amount, type) {
     // When seeking before player is ready, store value and seek later
     if (!this.isReady && amount !== 0) {
       this.seekOnPlay = amount
       setTimeout(() => { this.seekOnPlay = null }, SEEK_ON_PLAY_EXPIRY)
       return
     }
-    if (amount > 0 && amount < 1) {
+    const isFraction = !type ? (amount > 0 && amount < 1) : type === 'fraction'
+    if (isFraction) {
       // Convert fraction to seconds based on duration
       const duration = this.player.getDuration()
       if (!duration) {
@@ -186,6 +190,10 @@ export default class Player extends Component {
       onEnded()
     }
   }
+  onError = (...args) => {
+    this.isLoading = false
+    this.props.onError(...args)
+  }
   onDurationCheck = () => {
     clearTimeout(this.durationCheckTimeout)
     const duration = this.getDuration()
@@ -222,6 +230,7 @@ export default class Player extends Component {
         onPause={this.onPause}
         onEnded={this.onEnded}
         onLoaded={this.onLoaded}
+        onError={this.onError}
       />
     )
   }

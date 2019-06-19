@@ -67,9 +67,11 @@ export class FilePlayer extends Component {
     this._isUnmounted = true;
   }
   addListeners () {
-    const { onReady, onPlay, onPause, onEnded, onError, playsinline, onEnablePIP } = this.props
+    const { onReady, onPlay, onBuffer, onBufferEnd, onPause, onEnded, onError, playsinline, onEnablePIP } = this.props
     this.player.addEventListener('canplay', onReady)
     this.player.addEventListener('play', onPlay)
+    this.player.addEventListener('waiting', onBuffer)
+    this.player.addEventListener('playing', onBufferEnd)
     this.player.addEventListener('pause', onPause)
     this.player.addEventListener('seeked', this.onSeek)
     this.player.addEventListener('ended', onEnded)
@@ -79,12 +81,15 @@ export class FilePlayer extends Component {
     if (playsinline) {
       this.player.setAttribute('playsinline', '')
       this.player.setAttribute('webkit-playsinline', '')
+      this.player.setAttribute('x5-playsinline', '')
     }
   }
   removeListeners () {
-    const { onReady, onPlay, onPause, onEnded, onError, onEnablePIP } = this.props
+    const { onReady, onPlay, onBuffer, onBufferEnd, onPause, onEnded, onError, onEnablePIP } = this.props
     this.player.removeEventListener('canplay', onReady)
     this.player.removeEventListener('play', onPlay)
+    this.player.removeEventListener('waiting', onBuffer)
+    this.player.removeEventListener('playing', onBufferEnd)
     this.player.removeEventListener('pause', onPause)
     this.player.removeEventListener('seeked', this.onSeek)
     this.player.removeEventListener('ended', onEnded)
