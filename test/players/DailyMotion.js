@@ -84,13 +84,13 @@ test('onDurationChange()', t => {
   instance.onDurationChange()
 })
 
-test('getDuration()', t => {
+test('dm - getDuration()', t => {
   const instance = shallow(<DailyMotion config={TEST_CONFIG} />).instance()
   instance.player = { duration: 10 }
   t.true(instance.getDuration() === 10)
 })
 
-test('getCurrentTime()', t => {
+test('dm - getCurrentTime()', t => {
   const instance = shallow(<DailyMotion config={TEST_CONFIG} />).instance()
   instance.player = { currentTime: 5 }
   t.true(instance.getCurrentTime() === 5)

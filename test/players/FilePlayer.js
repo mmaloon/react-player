@@ -133,7 +133,7 @@ test('load - dash', async t => {
   getSDK.restore()
 })
 
-test('load - MediaStream', t => {
+test('load - MediaStream ', t => {
   const url = new MockMediaStream()
   const instance = shallow(<FilePlayer url={url} config={config} />).instance()
   instance.load(url)
@@ -141,7 +141,7 @@ test('load - MediaStream', t => {
   t.falsy(instance.player.src)
 })
 
-test('load - MediaStream', t => {
+test('load - MediaStream 2', t => {
   const url = new MockMediaStream()
   const instance = shallow(<FilePlayer url={url} config={config} />).instance()
   Object.defineProperty(instance.player, 'srcObject', {
@@ -160,7 +160,7 @@ test('forceVideo', t => {
     <FilePlayer url='file.mp3' config={{ file: {
       ...config.file,
       forceVideo: true
-    }}} />
+    } }} />
   )
   t.true(wrapper.containsMatchingElement(
     <video src='file.mp3'>{false}{[]}</video>
@@ -172,7 +172,7 @@ test('forceAudio', t => {
     <FilePlayer url='file.mp4' config={{ file: {
       ...config.file,
       forceAudio: true
-    }}} />
+    } }} />
   )
   t.true(wrapper.containsMatchingElement(
     <audio src='file.mp4'>{false}{[]}</audio>
@@ -184,7 +184,7 @@ test('render video poster', t => {
     <FilePlayer url='file.mp3' config={{ file: {
       ...config.file,
       attributes: { poster: 'poster.png' }
-    }}} />
+    } }} />
   )
   t.true(wrapper.containsMatchingElement(
     <video src='file.mp3' poster='poster.png'>{false}{[]}</video>
@@ -258,19 +258,19 @@ test('unmute()', t => {
   t.false(instance.player.muted)
 })
 
-test('setVolume()', t => {
+test('setPlaybackRate()', t => {
   const instance = shallow(<FilePlayer url='file.mp4' config={config} />).instance()
   instance.setPlaybackRate(0.5)
   t.true(instance.player.playbackRate === 0.5)
 })
 
-test('getDuration()', t => {
+test('fp - getDuration()', t => {
   const instance = shallow(<FilePlayer url='file.mp4' config={config} />).instance()
   instance.player.duration = 10
   t.true(instance.getDuration() === 10)
 })
 
-test('getCurrentTime()', t => {
+test('fp - getCurrentTime()', t => {
   const instance = shallow(<FilePlayer url='file.mp4' config={config} />).instance()
   instance.player.currentTime = 5
   t.true(instance.getCurrentTime() === 5)
@@ -364,7 +364,7 @@ test('render tracks', t => {
         { kind: 'subtitles', src: 'subtitles.en.vtt', srcLang: 'en', default: true },
         { kind: 'subtitles', src: 'subtitles.ja.vtt', srcLang: 'ja' }
       ]
-    }}} />
+    } }} />
   )
   t.true(wrapper.containsMatchingElement(
     <video src='file.mp4'>
