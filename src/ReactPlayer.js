@@ -52,13 +52,20 @@ export default class ReactPlayer extends Component {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState)
   }
   componentWillUpdate (nextProps) {
+    const { light } = this.props
     this.config = getConfig(nextProps, defaultProps)
-    if (!this.props.light && nextProps.light) {
+    if (!light && nextProps.light) {
       this.setState({ showPreview: true })
+    }
+    if (light && !nextProps.light) {
+      this.setState({ showPreview: false })
     }
   }
   onClickPreview = () => {
     this.setState({ showPreview: false })
+  }
+  showPreview = () => {
+    this.setState({ showPreview: true })
   }
   getDuration = () => {
     if (!this.player) return null

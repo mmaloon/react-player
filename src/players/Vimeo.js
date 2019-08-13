@@ -10,6 +10,7 @@ const MATCH_FILE_URL = /vimeo\.com\/external\/[0-9]+\..+/
 
 export class Vimeo extends Component {
   static displayName = 'Vimeo'
+  static forceLoad = true // Prevent checking isLoading when URL changes
   static canPlay = url => {
     if (MATCH_FILE_URL.test(url)) {
       return false
@@ -84,6 +85,9 @@ export class Vimeo extends Component {
   setLoop (loop) {
     this.callPlayer('setLoop', loop)
   }
+  setPlaybackRate (rate) {
+    this.callPlayer('setPlaybackRate', rate)
+  }
   mute = () => {
     this.setVolume(0)
   }
@@ -105,11 +109,13 @@ export class Vimeo extends Component {
     this.container = container
   }
   render () {
+    const { display } = this.props
     const style = {
       width: '100%',
       height: '100%',
       overflow: 'hidden',
-      backgroundColor: 'black'
+      backgroundColor: 'black',
+      display
     }
     return (
       <div

@@ -80,6 +80,4 @@ test.serial('multiple sdkReady callbacks', async t => {
   t.is(result[0], 'sdk')
   t.is(result[1], 'sdk')
   t.true(loadScriptOverride.calledOnce)
-
 })
-
