@@ -57,13 +57,13 @@ test('load()', t => {
   })
 })
 
-test('getDuration()', t => {
+test('sc - getDuration()', t => {
   const instance = shallow(<SoundCloud />).instance()
   instance.duration = 10
   t.true(instance.getDuration() === 10)
 })
 
-test('getCurrentTime()', t => {
+test('sc - getCurrentTime()', t => {
   const instance = shallow(<SoundCloud />).instance()
   instance.currentTime = 5
   t.true(instance.getCurrentTime() === 5)
@@ -79,7 +79,8 @@ test('getSecondsLoaded()', t => {
 test('render()', t => {
   const style = {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    display: undefined
   }
   const wrapper = shallow(<SoundCloud url={TEST_URL} />)
   t.true(wrapper.contains(

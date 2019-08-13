@@ -84,13 +84,13 @@ test('onDurationChange()', t => {
   instance.onDurationChange()
 })
 
-test('getDuration()', t => {
+test('dm - getDuration()', t => {
   const instance = shallow(<DailyMotion config={TEST_CONFIG} />).instance()
   instance.player = { duration: 10 }
   t.true(instance.getDuration() === 10)
 })
 
-test('getCurrentTime()', t => {
+test('dm - getCurrentTime()', t => {
   const instance = shallow(<DailyMotion config={TEST_CONFIG} />).instance()
   instance.player = { currentTime: 5 }
   t.true(instance.getCurrentTime() === 5)
@@ -106,7 +106,8 @@ test('render()', t => {
   const style = {
     width: '100%',
     height: '100%',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
+    display: undefined
   }
   const wrapper = shallow(<DailyMotion config={TEST_CONFIG} />)
   t.true(wrapper.contains(

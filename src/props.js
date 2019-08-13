@@ -144,8 +144,8 @@ export const defaultProps = {
       forceHLS: false,
       forceDASH: false,
       hlsOptions: {},
-      hlsVersion: '0.11.0',
-      dashVersion: '2.9.2'
+      hlsVersion: '0.12.4',
+      dashVersion: '2.9.3'
     },
     wistia: {
       options: {}

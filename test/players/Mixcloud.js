@@ -51,13 +51,13 @@ test('load()', async t => {
   getSDK.restore()
 })
 
-test('getDuration()', t => {
+test('mx - getDuration()', t => {
   const instance = shallow(<Mixcloud url={TEST_URL} config={TEST_CONFIG} />).instance()
   instance.duration = 10
   t.true(instance.getDuration() === 10)
 })
 
-test('getCurrentTime()', t => {
+test('mx - getCurrentTime()', t => {
   const instance = shallow(<Mixcloud url={TEST_URL} config={TEST_CONFIG} />).instance()
   instance.currentTime = 5
   t.true(instance.getCurrentTime() === 5)
